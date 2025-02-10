@@ -1,319 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>D BG Removal | Professional Background Removal</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <!-- Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BG Cut</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: #f4f4f9;
-      margin: 0;
-      padding-top: 70px;   /* space for fixed header */
-      padding-bottom: 70px;/* space for fixed footer */
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       text-align: center;
     }
-    /* Fixed Header Bar with Material Icon Menu */
+
     header {
+      background-color: #f3f4f6;
+      padding: 10px 0;
+      width: 100%;
+      font-size: 2rem;
+      color: #333;
       position: fixed;
       top: 0;
-      left: 0;
-      width: 100%;
-      background-color: #4f46e5;
+    }
+
+    label {
+      display: inline-block;
+      background-color: #2563eb;
       color: white;
-      padding: 1rem 2rem;
-      font-size: 2.5rem;
-      font-weight: 600;
-      background-size: cover;
-      background-position: center;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    .header-title {
-      flex-grow: 1;
-      text-align: center;
-    }
-    /* Menu Container */
-    .menu-container {
-      position: absolute;
-      right: 1rem;
-    }
-    /* Three-Dot (Kebab) Menu using Material Icon */
-    .menu-icon {
-      font-size: 2rem;
+      padding: 14px 32px;
+      border-radius: 50px;
       cursor: pointer;
-      user-select: none;
-      color: white;
+      font-size: 16px;
+      margin-top: 20px;
     }
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 2.5rem;
-      right: 0;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-radius: 5px;
-      z-index: 1100;
-      min-width: 100px;
-    }
-    .dropdown-menu a {
-      display: block;
-      padding: 0.5rem 1rem;
-      text-decoration: none;
-      color: #4f46e5;
-      font-weight: 600;
-    }
-    .dropdown-menu a:hover {
-      background-color: #f4f4f4;
-    }
-    /* Sections */
-    section {
-      display: none;
-    }
-    .active-section {
-      display: block;
-    }
-    /* Center Home Section Vertically */
-    #home-section {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: calc(100vh - 140px); /* adjust if header/footer heights change */
-    }
-    .upload-container {
-      background-color: #fff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin: auto;
-      max-width: 600px;
-      width: 95%;
-    }
+
     #file-input {
       display: none;
     }
-    label {
+
+    #preview-section {
+      background-color: transparent;
+      width: 320px;
+      height: 320px;
+      border-radius: 16px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #bbb;
+    }
+
+    img {
+      max-width: 300px;
+      max-height: 300px;
+      border-radius: 8px;
+    }
+
+    #download-btn {
       background-color: #2563eb;
       color: white;
-      padding: 1rem 2rem;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-      display: inline-block;
-      margin-bottom: 1rem;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-      margin: 1rem 0;
-    }
-    .button-group {
-      margin-top: 1.5rem;
-    }
-    button {
-      background-color: #4f46e5;
-      color: white;
       border: none;
-      padding: 1rem 1.5rem;
-      margin: 0.5rem;
+      padding: 20px;
       cursor: pointer;
-      border-radius: 5px;
-      font-size: 1rem;
+      border-radius: 50%;
+      font-size: 14px;
+      width: 60px;
+      height: 60px;
+      margin-top: 20px;
     }
-    button:hover {
-      background-color: #3730a3;
-    }
-    .loading-spinner {
-      display: none;
-      margin-top: 1rem;
-    }
-    /* Fixed Footer */
+
     footer {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f3f4f6;
+      color: #666;
+      font-size: 14px;
+      width: 100%;
+      text-align: center;
       position: fixed;
       bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #4f46e5;
-      color: white;
-      padding: 1rem;
-      font-size: 1rem;
-      text-align: center;
-      z-index: 1000;
     }
-    /* Mobile Responsive Styles */
-    @media (max-width: 768px) {
-      header {
-        font-size: 2rem;
-        padding: 1rem 1.5rem;
-      }
-      .menu-icon {
-        font-size: 1.8rem;
-      }
-      .dropdown-menu a {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
-      }
-      .upload-container {
-        padding: 1.5rem;
-      }
-      label {
-        padding: 0.75rem 1.5rem;
-        font-size: 0.9rem;
-      }
-      button {
-        padding: 0.75rem 1.25rem;
-        font-size: 0.9rem;
-      }
-      .loading-spinner p {
-        font-size: 0.9rem;
-      }
-      footer {
-        padding: 0.75rem;
-        font-size: 0.9rem;
-      }
+
+    .loading-spinner {
+      display: none;
+      margin-top: 10px;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-title">D BG Removal</div>
-    <div class="menu-container">
-      <!-- Material Icon "dehaze" is used for the menu icon -->
-      <span class="menu-icon material-icons">dehaze</span>
-      <div class="dropdown-menu" id="dropdown-menu">
-        <a href="#" id="home-option">Home</a>
-        <a href="#" id="contact-option">Contact Us</a>
-      </div>
-    </div>
-  </header>
-  
-  <!-- Home Section -->
-  <section id="home-section" class="active-section">
-    <div class="upload-container">
-      <h2>Upload Image to Remove Background</h2>
-      <label for="file-input">Select Image</label>
-      <input type="file" id="file-input" accept="image/*" />
-      <div id="preview-section">
-        <h3>Preview</h3>
-        <img id="original-image" src="" alt="Original Image Preview" />
-        <img id="result-image" src="" alt="Processed Image Preview" />
-      </div>
-      <div class="button-group">
-        <button id="process-btn" disabled>Remove Background</button>
-        <button id="download-btn" disabled>Download Result</button>
-      </div>
-      <div class="loading-spinner" id="loading-spinner">
-        <p>Processing... Please wait</p>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Contact Section -->
-  <section id="contact-section">
-    <h2>Contact Us</h2>
-    <p>Email: <a href="mailto:deepdeb935@gmail.com">deepdeb935@gmail.com</a></p>
-    <p>Phone: <a href="tel:6289319143">6289319143</a></p>
-  </section>
-  
-  <footer>
-    <p>© 2025 D BG Removal</p>
-  </footer>
-  
+  <header>BG Cut</header>
+
+  <h1>Remove Image Background</h1>
+  <h2>100% Automatically and Free</h2>
+  <label for="file-input">Upload Image</label>
+  <input type="file" id="file-input" accept="image/*">
+
+  <div class="loading-spinner" id="loading-spinner">
+    <p>Processing... Please wait.</p>
+  </div>
+
+  <div id="preview-section">
+    <img id="result-image" src="" alt="" />
+  </div>
+
+  <button id="download-btn" style="display: none;">⬇</button>
+
+  <footer>© 2025 BG Cut - Fast & Free Background Removal</footer>
+
   <script>
-    // Toggle dropdown menu on menu icon click
-    const menuIcon = document.querySelector('.menu-icon');
-    const dropdownMenu = document.getElementById('dropdown-menu');
-    menuIcon.addEventListener('click', () => {
-      dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-    });
-    
-    // Navigation from dropdown menu
-    const homeOption = document.getElementById('home-option');
-    const contactOption = document.getElementById('contact-option');
-    const homeSection = document.getElementById('home-section');
-    const contactSection = document.getElementById('contact-section');
-    
-    homeOption.addEventListener('click', () => {
-      homeSection.classList.add('active-section');
-      contactSection.classList.remove('active-section');
-      dropdownMenu.style.display = 'none';
-    });
-    contactOption.addEventListener('click', () => {
-      contactSection.classList.add('active-section');
-      homeSection.classList.remove('active-section');
-      dropdownMenu.style.display = 'none';
-    });
-    
-    // Image Upload and Processing
     const fileInput = document.getElementById('file-input');
-    const processBtn = document.getElementById('process-btn');
     const downloadBtn = document.getElementById('download-btn');
-    const originalImage = document.getElementById('original-image');
     const resultImage = document.getElementById('result-image');
     const loadingSpinner = document.getElementById('loading-spinner');
-    let uploadedFile = null;
     let resultBlob = null;
-    
-    fileInput.addEventListener('change', (e) => {
+
+    fileInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
-      if (file) {
-        uploadedFile = file;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          originalImage.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-        processBtn.disabled = false;
-      }
-    });
-    
-    processBtn.addEventListener('click', async () => {
-      processBtn.disabled = true;
+      if (!file) return;
+
       loadingSpinner.style.display = 'block';
-      if (!uploadedFile) return;
       try {
         const formData = new FormData();
-        formData.append('image_file', uploadedFile);
+        formData.append('image_file', file);
         formData.append('size', 'auto');
+
         const response = await fetch('https://api.remove.bg/v1.0/removebg', {
           method: 'POST',
           headers: {
-            'X-Api-Key': 'BdW5BHhvLcrYgMZkJvaxx55q' // Replace with your API key
+            'X-Api-Key': 'BdW5BHhvLcrYgMZkJvaxx55q'
           },
           body: formData
         });
+
         if (!response.ok) {
           throw new Error('Failed to process image');
         }
+
         resultBlob = await response.blob();
         const resultUrl = URL.createObjectURL(resultBlob);
         resultImage.src = resultUrl;
-        downloadBtn.disabled = false;
+        downloadBtn.style.display = 'inline-block';
+
         downloadBtn.onclick = () => {
           const link = document.createElement('a');
-          const downloadUrl = URL.createObjectURL(resultBlob);
-          link.href = downloadUrl;
+          link.href = resultUrl;
           link.download = 'processed-image-' + Date.now() + '.png';
-          document.body.appendChild(link);
           link.click();
-          document.body.removeChild(link);
-          setTimeout(() => {
-            URL.revokeObjectURL(downloadUrl);
-          }, 100);
         };
+
       } catch (error) {
         alert(error.message);
       } finally {
-        processBtn.disabled = false;
         loadingSpinner.style.display = 'none';
       }
     });
