@@ -39,7 +39,7 @@
       font-weight: 600;
     }
 
-    label {
+    label, #download-btn {
       display: inline-block;
       background-color: #2563eb;
       color: white;
@@ -48,6 +48,9 @@
       cursor: pointer;
       font-size: 16px;
       margin-top: 20px;
+      text-align: center;
+      text-decoration: none;
+      border: none;
     }
 
     #file-input {
@@ -55,7 +58,7 @@
     }
 
     #preview-section {
-      background: url('https://i.postimg.cc/jdWMHJ31/Picsart-25-02-11-00-47-11-635.jpg') center/cover no-repeat;
+      background: white;
       width: 100%;
       max-width: 320px;
       height: 320px;
@@ -66,6 +69,7 @@
       justify-content: center;
       border: 2px dashed #bbb;
       position: relative;
+      transition: background 0.5s ease;
     }
 
     img {
@@ -120,9 +124,8 @@
       text-decoration: underline;
     }
 
-    /* Responsive Design */
     @media (max-width: 600px) {
-      label {
+      label, #download-btn {
         padding: 10px 24px;
         font-size: 14px;
       }
@@ -150,6 +153,8 @@
     <img id="result-image" src="" alt="" />
   </div>
 
+  <button id="download-btn" style="display:none;">Download Image</button>
+
   <footer>
     <p>© 2025 BG Cut - Fast & Free Background Removal</p>
     <div class="footer-links">
@@ -163,6 +168,10 @@
     const fileInput = document.getElementById('file-input');
     const resultImage = document.getElementById('result-image');
     const loadingSpinner = document.getElementById('loading-spinner');
+    const previewSection = document.getElementById('preview-section');
+    const downloadBtn = document.getElementById('download-btn');
+
+    let resultBlob = null;
 
     fileInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -170,6 +179,9 @@
 
       loadingSpinner.style.display = 'block';
       resultImage.style.display = 'none';
+      previewSection.style.background = 'white';
+      downloadBtn.style.display = 'none';
+
       try {
         const formData = new FormData();
         formData.append('image_file', file);
@@ -187,10 +199,20 @@
           throw new Error('Failed to process image');
         }
 
-        const resultBlob = await response.blob();
+        resultBlob = await response.blob();
         const resultUrl = URL.createObjectURL(resultBlob);
         resultImage.src = resultUrl;
         resultImage.style.display = 'block';
+        previewSection.style.background = "url('https://i.postimg.cc/jdWMHJ31/Picsart-25-02-11-00-47-11-635.jpg') center/cover no-repeat";
+        downloadBtn.style.display = 'inline-block';
+
+        downloadBtn.onclick = () => {
+          const link = document.createElement('a');
+          link.href = resultUrl;
+          link.download = 'processed-image-' + Date.now() + '.png';
+          link.click();
+        };
+
       } catch (error) {
         alert(error.message);
       } finally {
