@@ -4,53 +4,97 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>D BG Removal | Professional Background Removal</title>
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <style>
     /* Global Styles */
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #f4f4f9;
-      text-align: center;
       margin: 0;
-      padding: 0;
+      padding-top: 70px;   /* space for fixed header */
+      padding-bottom: 70px;/* space for fixed footer */
+      text-align: center;
     }
+    /* Fixed Header Bar with Material Icon Menu */
     header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
       background-color: #4f46e5;
       color: white;
-      padding: 2rem;
+      padding: 1rem 2rem;
       font-size: 2.5rem;
       font-weight: 600;
       background-size: cover;
       background-position: center;
-    }
-    nav {
-      background: #ffffff;
-      padding: 1rem;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
     }
-    nav a {
-      margin: 0 1.5rem;
+    .header-title {
+      flex-grow: 1;
+      text-align: center;
+    }
+    /* Menu Container */
+    .menu-container {
+      position: absolute;
+      right: 1rem;
+    }
+    /* Three-Dot (Kebab) Menu using Material Icon */
+    .menu-icon {
+      font-size: 2rem;
+      cursor: pointer;
+      user-select: none;
+      color: white;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 2.5rem;
+      right: 0;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 5px;
+      z-index: 1100;
+      min-width: 100px;
+    }
+    .dropdown-menu a {
+      display: block;
+      padding: 0.5rem 1rem;
       text-decoration: none;
       color: #4f46e5;
       font-weight: 600;
-      cursor: pointer;
     }
-    nav a:hover {
-      text-decoration: underline;
+    .dropdown-menu a:hover {
+      background-color: #f4f4f4;
     }
+    /* Sections */
     section {
       display: none;
     }
     .active-section {
       display: block;
     }
+    /* Center Home Section Vertically */
+    #home-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 140px); /* adjust if header/footer heights change */
+    }
     .upload-container {
-      background-color: white;
+      background-color: #fff;
       padding: 2rem;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin: 2rem auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin: auto;
       max-width: 600px;
       width: 95%;
     }
@@ -92,25 +136,30 @@
       display: none;
       margin-top: 1rem;
     }
+    /* Fixed Footer */
     footer {
-      margin-top: 3rem;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       background-color: #4f46e5;
       color: white;
       padding: 1rem;
       font-size: 1rem;
+      text-align: center;
+      z-index: 1000;
     }
-    
     /* Mobile Responsive Styles */
     @media (max-width: 768px) {
       header {
         font-size: 2rem;
-        padding: 1.5rem;
+        padding: 1rem 1.5rem;
       }
-      nav {
-        padding: 0.75rem;
+      .menu-icon {
+        font-size: 1.8rem;
       }
-      nav a {
-        margin: 0 1rem;
+      .dropdown-menu a {
+        padding: 0.5rem 0.75rem;
         font-size: 0.9rem;
       }
       .upload-container {
@@ -136,13 +185,16 @@
 </head>
 <body>
   <header>
-    <h1>D BG Removal</h1>
+    <div class="header-title">D BG Removal</div>
+    <div class="menu-container">
+      <!-- Material Icon "dehaze" is used for the menu icon -->
+      <span class="menu-icon material-icons">dehaze</span>
+      <div class="dropdown-menu" id="dropdown-menu">
+        <a href="#" id="home-option">Home</a>
+        <a href="#" id="contact-option">Contact Us</a>
+      </div>
+    </div>
   </header>
-  
-  <nav>
-    <a href="#" id="home-link">Home</a>
-    <a href="#" id="contact-link">Contact</a>
-  </nav>
   
   <!-- Home Section -->
   <section id="home-section" class="active-section">
@@ -177,31 +229,40 @@
   </footer>
   
   <script>
+    // Toggle dropdown menu on menu icon click
+    const menuIcon = document.querySelector('.menu-icon');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    menuIcon.addEventListener('click', () => {
+      dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+    
+    // Navigation from dropdown menu
+    const homeOption = document.getElementById('home-option');
+    const contactOption = document.getElementById('contact-option');
+    const homeSection = document.getElementById('home-section');
+    const contactSection = document.getElementById('contact-section');
+    
+    homeOption.addEventListener('click', () => {
+      homeSection.classList.add('active-section');
+      contactSection.classList.remove('active-section');
+      dropdownMenu.style.display = 'none';
+    });
+    contactOption.addEventListener('click', () => {
+      contactSection.classList.add('active-section');
+      homeSection.classList.remove('active-section');
+      dropdownMenu.style.display = 'none';
+    });
+    
+    // Image Upload and Processing
     const fileInput = document.getElementById('file-input');
     const processBtn = document.getElementById('process-btn');
     const downloadBtn = document.getElementById('download-btn');
     const originalImage = document.getElementById('original-image');
     const resultImage = document.getElementById('result-image');
     const loadingSpinner = document.getElementById('loading-spinner');
-    const homeLink = document.getElementById('home-link');
-    const contactLink = document.getElementById('contact-link');
-    const homeSection = document.getElementById('home-section');
-    const contactSection = document.getElementById('contact-section');
     let uploadedFile = null;
     let resultBlob = null;
     
-    // Navigation
-    homeLink.addEventListener('click', () => {
-      homeSection.classList.add('active-section');
-      contactSection.classList.remove('active-section');
-    });
-    
-    contactLink.addEventListener('click', () => {
-      contactSection.classList.add('active-section');
-      homeSection.classList.remove('active-section');
-    });
-    
-    // Image Upload and Processing
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -239,14 +300,12 @@
         downloadBtn.disabled = false;
         downloadBtn.onclick = () => {
           const link = document.createElement('a');
-          // Use the existing resultBlob to create a download URL
           const downloadUrl = URL.createObjectURL(resultBlob);
           link.href = downloadUrl;
           link.download = 'processed-image-' + Date.now() + '.png';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-          // Optionally, revokeObjectURL after a short delay
           setTimeout(() => {
             URL.revokeObjectURL(downloadUrl);
           }, 100);
