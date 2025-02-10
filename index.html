@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>D BG Removal | Professional Background Removal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
   <style>
+    /* Global Styles */
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #f4f4f9;
       text-align: center;
-      padding: 0;
       margin: 0;
+      padding: 0;
     }
-
     header {
       background-color: #4f46e5;
       color: white;
@@ -23,14 +23,12 @@
       background-size: cover;
       background-position: center;
     }
-
     nav {
       background: #ffffff;
       padding: 1rem;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
-
     nav a {
       margin: 0 1.5rem;
       text-decoration: none;
@@ -38,33 +36,27 @@
       font-weight: 600;
       cursor: pointer;
     }
-
     nav a:hover {
       text-decoration: underline;
     }
-
     section {
       display: none;
     }
-
     .active-section {
       display: block;
     }
-
     .upload-container {
       background-color: white;
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: inline-block;
-      text-align: center;
       margin: 2rem auto;
+      max-width: 600px;
+      width: 95%;
     }
-
     #file-input {
       display: none;
     }
-
     label {
       background-color: #2563eb;
       color: white;
@@ -72,18 +64,17 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 1rem;
+      display: inline-block;
+      margin-bottom: 1rem;
     }
-
     img {
       max-width: 100%;
       height: auto;
       margin: 1rem 0;
     }
-
     .button-group {
       margin-top: 1.5rem;
     }
-
     button {
       background-color: #4f46e5;
       color: white;
@@ -94,21 +85,52 @@
       border-radius: 5px;
       font-size: 1rem;
     }
-
     button:hover {
       background-color: #3730a3;
     }
-
     .loading-spinner {
       display: none;
       margin-top: 1rem;
     }
-
     footer {
       margin-top: 3rem;
       background-color: #4f46e5;
       color: white;
       padding: 1rem;
+      font-size: 1rem;
+    }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      header {
+        font-size: 2rem;
+        padding: 1.5rem;
+      }
+      nav {
+        padding: 0.75rem;
+      }
+      nav a {
+        margin: 0 1rem;
+        font-size: 0.9rem;
+      }
+      .upload-container {
+        padding: 1.5rem;
+      }
+      label {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
+      button {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+      }
+      .loading-spinner p {
+        font-size: 0.9rem;
+      }
+      footer {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -116,46 +138,44 @@
   <header>
     <h1>Hitmi BG Removal</h1>
   </header>
-
+  
   <nav>
     <a href="#" id="home-link">Home</a>
     <a href="#" id="contact-link">Contact</a>
   </nav>
-
+  
   <!-- Home Section -->
   <section id="home-section" class="active-section">
     <div class="upload-container">
       <h2>Upload Image to Remove Background</h2>
       <label for="file-input">Select Image</label>
-      <input type="file" id="file-input" accept="image/*">
+      <input type="file" id="file-input" accept="image/*" />
       <div id="preview-section">
         <h3>Preview</h3>
-        <img id="original-image" src="" alt="Original Image Preview">
-        <img id="result-image" src="" alt="Processed Image Preview">
+        <img id="original-image" src="" alt="Original Image Preview" />
+        <img id="result-image" src="" alt="Processed Image Preview" />
       </div>
-
       <div class="button-group">
         <button id="process-btn" disabled>Remove Background</button>
         <button id="download-btn" disabled>Download Result</button>
       </div>
-
       <div class="loading-spinner" id="loading-spinner">
         <p>Processing... Please wait</p>
       </div>
     </div>
   </section>
-
+  
   <!-- Contact Section -->
   <section id="contact-section">
     <h2>Contact Us</h2>
     <p>Email: <a href="mailto:deepdeb935@gmail.com">deepdeb935@gmail.com</a></p>
     <p>Phone: <a href="tel:6289319143">6289319143</a></p>
   </section>
-
+  
   <footer>
     <p>© 2025 D BG Removal</p>
   </footer>
-
+  
   <script>
     const fileInput = document.getElementById('file-input');
     const processBtn = document.getElementById('process-btn');
@@ -169,18 +189,18 @@
     const contactSection = document.getElementById('contact-section');
     let uploadedFile = null;
     let resultBlob = null;
-
+    
     // Navigation
     homeLink.addEventListener('click', () => {
       homeSection.classList.add('active-section');
       contactSection.classList.remove('active-section');
     });
-
+    
     contactLink.addEventListener('click', () => {
       contactSection.classList.add('active-section');
       homeSection.classList.remove('active-section');
     });
-
+    
     // Image Upload and Processing
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -194,17 +214,15 @@
         processBtn.disabled = false;
       }
     });
-
+    
     processBtn.addEventListener('click', async () => {
       processBtn.disabled = true;
       loadingSpinner.style.display = 'block';
       if (!uploadedFile) return;
-
       try {
         const formData = new FormData();
         formData.append('image_file', uploadedFile);
         formData.append('size', 'auto');
-
         const response = await fetch('https://api.remove.bg/v1.0/removebg', {
           method: 'POST',
           headers: {
@@ -212,23 +230,26 @@
           },
           body: formData
         });
-
         if (!response.ok) {
           throw new Error('Failed to process image');
         }
-
         resultBlob = await response.blob();
         const resultUrl = URL.createObjectURL(resultBlob);
         resultImage.src = resultUrl;
         downloadBtn.disabled = false;
-
         downloadBtn.onclick = () => {
           const link = document.createElement('a');
-          link.href = URL.createObjectURL(resultBlob);
-          link.download = `processed-image-${Date.now()}.png`;
+          // Use the existing resultBlob to create a download URL
+          const downloadUrl = URL.createObjectURL(resultBlob);
+          link.href = downloadUrl;
+          link.download = 'processed-image-' + Date.now() + '.png';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
+          // Optionally, revokeObjectURL after a short delay
+          setTimeout(() => {
+            URL.revokeObjectURL(downloadUrl);
+          }, 100);
         };
       } catch (error) {
         alert(error.message);
