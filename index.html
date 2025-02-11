@@ -16,27 +16,69 @@
       font-family: 'Poppins', sans-serif;
       background-color: #f9f9f9;
       color: #333;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      text-align: center;
-      padding-top: 80px;
-      padding-bottom: 80px;
     }
 
     header {
       background-color: #5b6770;
       color: white;
-      padding: 15px;
+      padding: 15px 20px;
       width: 100%;
       position: fixed;
       top: 0;
       z-index: 1000;
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
       font-size: 24px;
       font-weight: 600;
+      cursor: pointer;
+    }
+
+    #menu-btn {
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+    }
+
+    nav {
+      position: absolute;
+      top: 60px;
+      right: 10px;
+      background: #5b6770;
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      display: block;
+    }
+
+    nav a:hover {
+      background: #333;
+    }
+
+    main {
+      margin-top: 80px;
+      padding: 20px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1, h2 {
+      margin-bottom: 20px;
     }
 
     label, #download-btn {
@@ -63,11 +105,11 @@
       max-width: 320px;
       height: 320px;
       border-radius: 16px;
-      margin: 20px 0;
+      margin: 20px auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 3px solid white; /* White border added */
+      border: 3px solid white;
       position: relative;
     }
 
@@ -103,82 +145,77 @@
       text-align: center;
       padding: 15px;
       width: 100%;
-      position: fixed;
-      bottom: 0;
       font-size: 14px;
+      margin-top: 20px;
     }
 
-    .footer-links {
-      margin-top: 5px;
+    #contact-section {
+      display: none;
+      padding: 40px;
+      text-align: center;
     }
 
-    .footer-links a {
-      color: white;
-      text-decoration: none;
-      margin: 0 8px;
-      font-size: 12px;
-    }
-
-    .footer-links a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 600px) {
-      label, #download-btn {
-        padding: 10px 24px;
-        font-size: 14px;
-      }
-
-      #preview-section {
-        width: 90%;
-      }
-
-      footer {
-        font-size: 12px;
-      }
+    #contact-section.active {
+      display: block;
     }
   </style>
 </head>
 <body>
-  <header>BG Cut</header>
+  <header>
+    <h1 onclick="showHomePage()">BG Cut</h1>
+    <button id="menu-btn">☰</button>
+    <nav id="menu">
+      <a href="#" onclick="showHomePage()">Home</a>
+      <a href="#" onclick="showContactPage()">Contact Us</a>
+    </nav>
+  </header>
 
-  <h1>Remove Image Background</h1>
-  <h2>100% Automatically and Free</h2>
-  <label for="file-input">Upload Image</label>  
-  <input type="file" id="file-input" accept="image/*">
+  <main id="main-content">
+    <h1>Remove Image Background</h1>
+    <h2>100% Automatically and Free</h2>
+    <label for="file-input">Upload Image</label>  
+    <input type="file" id="file-input" accept="image/*">
 
-  <div id="preview-section">
-    <div class="loading-spinner" id="loading-spinner"></div>
-    <img id="result-image" src="" alt="" />
-  </div>
+    <div id="preview-section">
+      <div class="loading-spinner" id="loading-spinner"></div>
+      <img id="result-image" src="" alt="" />
+    </div>
 
-  <button id="download-btn" style="display:none;">Download Image</button>
+    <button id="download-btn" style="display:none;">Download Image</button>
+  </main>
+
+  <section id="contact-section">
+    <h1>Contact Us</h1>
+    <p>Email: deepdeb2025@gmail.com</p>
+    <p>Contact Number: +91 6289319143</p>
+    <a href="#" onclick="showHomePage()">Back to Home</a>
+  </section>
 
   <footer>
     <p>© 2025 BG Cut - Fast & Free Background Removal</p>
-    <div class="footer-links">
-      <a href="#">Terms of Service</a> |
-      <a href="#">Privacy Policy</a> |
-      <a href="#contact">Contact Us</a>
-    </div>
   </footer>
 
   <script>
     const fileInput = document.getElementById('file-input');
     const resultImage = document.getElementById('result-image');
     const loadingSpinner = document.getElementById('loading-spinner');
-    const previewSection = document.getElementById('preview-section');
     const downloadBtn = document.getElementById('download-btn');
+    const previewSection = document.getElementById('preview-section');
+    const menuBtn = document.getElementById('menu-btn');
+    const menu = document.getElementById('menu');
 
-    let resultBlob = null;
+    menuBtn.addEventListener('click', () => {
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    });
 
     fileInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
+      previewSection.style.backgroundImage = 'none';
+      previewSection.style.backgroundColor = 'white';
       loadingSpinner.style.display = 'block';
       resultImage.style.display = 'none';
-      previewSection.style.background = 'white';
       downloadBtn.style.display = 'none';
 
       try {
@@ -189,7 +226,7 @@
         const response = await fetch('https://api.remove.bg/v1.0/removebg', {
           method: 'POST',
           headers: {
-            'X-Api-Key': 'BdW5BHhvLcrYgMZkJvaxx55q' // Your API key
+            'X-Api-Key': 'HoGvJXRPXNC7dsuCmvSFMfPv'
           },
           body: formData
         });
@@ -198,12 +235,15 @@
           throw new Error('Failed to process image');
         }
 
-        resultBlob = await response.blob();
+        const resultBlob = await response.blob();
         const resultUrl = URL.createObjectURL(resultBlob);
+
         resultImage.src = resultUrl;
         resultImage.style.display = 'block';
-        previewSection.style.background = "url('https://i.postimg.cc/jdWMHJ31/Picsart-25-02-11-00-47-11-635.jpg') center/cover no-repeat";
         downloadBtn.style.display = 'inline-block';
+        previewSection.style.backgroundImage = "url('https://i.postimg.cc/SQBph5r4/Picsart-25-02-11-00-47-11-635.jpg')";
+        previewSection.style.backgroundSize = 'cover';
+        previewSection.style.backgroundPosition = 'center';
 
         downloadBtn.onclick = () => {
           const link = document.createElement('a');
@@ -211,13 +251,22 @@
           link.download = 'processed-image-' + Date.now() + '.png';
           link.click();
         };
-
       } catch (error) {
         alert(error.message);
       } finally {
         loadingSpinner.style.display = 'none';
       }
     });
+
+    function showHomePage() {
+      document.getElementById('main-content').style.display = 'block';
+      document.getElementById('contact-section').classList.remove('active');
+    }
+
+    function showContactPage() {
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('contact-section').classList.add('active');
+    }
   </script>
 </body>
 </html>
