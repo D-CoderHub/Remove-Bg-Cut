@@ -19,6 +19,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
     header {
@@ -71,14 +72,10 @@
     }
 
     main {
-      margin-top: 80px;
+      margin-top: 100px;
       padding: 20px;
       width: 100%;
       text-align: center;
-    }
-
-    h1, h2 {
-      margin-bottom: 20px;
     }
 
     label, #download-btn {
@@ -109,14 +106,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 3px solid white;
+      border: 3px solid #ddd;
       position: relative;
+      transition: background 0.3s ease-in-out;
     }
 
     img {
       max-width: 100%;
       max-height: 300px;
       border-radius: 8px;
+      display: none;
     }
 
     .loading-spinner {
@@ -178,7 +177,7 @@
 
     <div id="preview-section">
       <div class="loading-spinner" id="loading-spinner"></div>
-      <img id="result-image" src="" alt="" />
+      <img id="result-image" src="" alt="Result Image" />
     </div>
 
     <button id="download-btn" style="display:none;">Download Image</button>
@@ -200,9 +199,9 @@
     const resultImage = document.getElementById('result-image');
     const loadingSpinner = document.getElementById('loading-spinner');
     const downloadBtn = document.getElementById('download-btn');
-    const previewSection = document.getElementById('preview-section');
     const menuBtn = document.getElementById('menu-btn');
     const menu = document.getElementById('menu');
+    const previewSection = document.getElementById('preview-section');
 
     menuBtn.addEventListener('click', () => {
       menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
@@ -212,11 +211,11 @@
       const file = e.target.files[0];
       if (!file) return;
 
-      previewSection.style.backgroundImage = 'none';
-      previewSection.style.backgroundColor = 'white';
       loadingSpinner.style.display = 'block';
       resultImage.style.display = 'none';
       downloadBtn.style.display = 'none';
+
+      previewSection.style.background = 'white';
 
       try {
         const formData = new FormData();
@@ -241,9 +240,8 @@
         resultImage.src = resultUrl;
         resultImage.style.display = 'block';
         downloadBtn.style.display = 'inline-block';
-        previewSection.style.backgroundImage = "url('https://i.postimg.cc/SQBph5r4/Picsart-25-02-11-00-47-11-635.jpg')";
-        previewSection.style.backgroundSize = 'cover';
-        previewSection.style.backgroundPosition = 'center';
+
+        previewSection.style.background = "url('https://i.postimg.cc/SQBph5r4/Picsart-25-02-11-00-47-11-635.jpg') no-repeat center/cover";
 
         downloadBtn.onclick = () => {
           const link = document.createElement('a');
@@ -270,3 +268,4 @@
   </script>
 </body>
 </html>
+
