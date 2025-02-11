@@ -50,14 +50,13 @@
     }
 
     nav {
+      display: none;
+      flex-direction: column;
+      background: #5b6770;
       position: absolute;
       top: 60px;
       right: 10px;
-      background: #5b6770;
       border-radius: 8px;
-      display: none;
-      flex-direction: column;
-      text-align: left;
     }
 
     nav a {
@@ -78,7 +77,7 @@
       text-align: center;
     }
 
-    label, #download-btn {
+    label, #download-btn, #choose-image-btn {
       display: inline-block;
       background-color: #2563eb;
       color: white;
@@ -92,7 +91,7 @@
       border: none;
     }
 
-    #file-input {
+    #file-input, #custom-image-input {
       display: none;
     }
 
@@ -111,6 +110,14 @@
       transition: background 0.3s ease-in-out;
     }
 
+    #generate-text {
+      position: absolute;
+      font-weight: bold;
+      color: black;
+      font-size: 18px;
+      display: none;
+    }
+
     img {
       max-width: 100%;
       max-height: 300px;
@@ -118,24 +125,19 @@
       display: none;
     }
 
-    .loading-spinner {
+    #color-palette {
       display: none;
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      border: 6px solid #ddd;
-      border-top: 6px solid #2563eb;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 10px;
     }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
+    .color-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     footer {
@@ -147,16 +149,6 @@
       font-size: 14px;
       margin-top: 20px;
     }
-
-    #contact-section {
-      display: none;
-      padding: 40px;
-      text-align: center;
-    }
-
-    #contact-section.active {
-      display: block;
-    }
   </style>
 </head>
 <body>
@@ -164,8 +156,8 @@
     <h1 onclick="showHomePage()">BG Cut</h1>
     <button id="menu-btn">☰</button>
     <nav id="menu">
-      <a href="#" onclick="showHomePage()">Home</a>
-      <a href="#" onclick="showContactPage()">Contact Us</a>
+      <a href="index.html">Home</a>
+      <a href="contact.html">Contact Us</a>
     </nav>
   </header>
 
@@ -176,19 +168,23 @@
     <input type="file" id="file-input" accept="image/*">
 
     <div id="preview-section">
-      <div class="loading-spinner" id="loading-spinner"></div>
+      <span id="generate-text">Generating Image ⏳</span>
       <img id="result-image" src="" alt="Result Image" />
     </div>
 
-    <button id="download-btn" style="display:none;">Download Image</button>
-  </main>
+    <div id="color-palette">
+      <div class="color-box" style="background-color: #ff5c8d;" data-color="#ff5c8d"></div>
+      <div class="color-box" style="background-color: #fbbc04;" data-color="#fbbc04"></div>
+      <div class="color-box" style="background-color: #34a853;" data-color="#34a853"></div>
+      <div class="color-box" style="background-color: #4285f4;" data-color="#4285f4"></div>
+      <div class="color-box" style="background-color: #d7aefb;" data-color="#d7aefb"></div>
+      <div class="color-box" style="background-color: #000000;" data-color="#000000"></div>
+    </div>
 
-  <section id="contact-section">
-    <h1>Contact Us</h1>
-    <p>Email: deepdeb2025@gmail.com</p>
-    <p>Contact Number: +91 6289319143</p>
-    <a href="#" onclick="showHomePage()">Back to Home</a>
-  </section>
+    <button id="download-btn" style="display:none;">Download Image</button>
+    <button id="choose-image-btn" style="display:none;">Choose Image</button>
+    <input type="file" id="custom-image-input" accept="image/*">
+  </main>
 
   <footer>
     <p>© 2025 BG Cut - Fast & Free Background Removal</p>
@@ -197,11 +193,15 @@
   <script>
     const fileInput = document.getElementById('file-input');
     const resultImage = document.getElementById('result-image');
-    const loadingSpinner = document.getElementById('loading-spinner');
     const downloadBtn = document.getElementById('download-btn');
+    const chooseImageBtn = document.getElementById('choose-image-btn');
+    const previewSection = document.getElementById('preview-section');
+    const colorBoxes = document.querySelectorAll('.color-box');
+    const colorPalette = document.getElementById('color-palette');
+    const generateText = document.getElementById('generate-text');
     const menuBtn = document.getElementById('menu-btn');
     const menu = document.getElementById('menu');
-    const previewSection = document.getElementById('preview-section');
+    const customImageInput = document.getElementById('custom-image-input');
 
     menuBtn.addEventListener('click', () => {
       menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
@@ -211,11 +211,12 @@
       const file = e.target.files[0];
       if (!file) return;
 
-      loadingSpinner.style.display = 'block';
       resultImage.style.display = 'none';
       downloadBtn.style.display = 'none';
-
+      chooseImageBtn.style.display = 'none';
       previewSection.style.background = 'white';
+      colorPalette.style.display = 'none';
+      generateText.style.display = 'block';
 
       try {
         const formData = new FormData();
@@ -240,32 +241,42 @@
         resultImage.src = resultUrl;
         resultImage.style.display = 'block';
         downloadBtn.style.display = 'inline-block';
-
-        previewSection.style.background = "url('https://i.postimg.cc/SQBph5r4/Picsart-25-02-11-00-47-11-635.jpg') no-repeat center/cover";
+        chooseImageBtn.style.display = 'inline-block';
+        colorPalette.style.display = 'flex';
+        generateText.style.display = 'none';
 
         downloadBtn.onclick = () => {
           const link = document.createElement('a');
           link.href = resultUrl;
-          link.download = 'processed-image-' + Date.now() + '.png';
+          link.download = 'processed-image.png';
           link.click();
         };
       } catch (error) {
         alert(error.message);
-      } finally {
-        loadingSpinner.style.display = 'none';
       }
     });
 
-    function showHomePage() {
-      document.getElementById('main-content').style.display = 'block';
-      document.getElementById('contact-section').classList.remove('active');
-    }
+    chooseImageBtn.addEventListener('click', () => {
+      customImageInput.click();
+    });
 
-    function showContactPage() {
-      document.getElementById('main-content').style.display = 'none';
-      document.getElementById('contact-section').classList.add('active');
-    }
+    customImageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          previewSection.style.backgroundImage = `url(${reader.result})`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    colorBoxes.forEach(box => {
+      box.addEventListener('click', () => {
+        const selectedColor = box.dataset.color;
+        previewSection.style.background = selectedColor;
+      });
+    });
   </script>
 </body>
 </html>
-
