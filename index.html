@@ -35,41 +35,6 @@
       align-items: center;
     }
 
-    header h1 {
-      font-size: 24px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    #menu-btn {
-      cursor: pointer;
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 24px;
-    }
-
-    nav {
-      display: none;
-      flex-direction: column;
-      background: #5b6770;
-      position: absolute;
-      top: 60px;
-      right: 10px;
-      border-radius: 8px;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      display: block;
-    }
-
-    nav a:hover {
-      background: #333;
-    }
-
     main {
       margin-top: 100px;
       padding: 20px;
@@ -86,7 +51,6 @@
       cursor: pointer;
       font-size: 16px;
       margin-top: 20px;
-      text-align: center;
       text-decoration: none;
       border: none;
     }
@@ -153,12 +117,7 @@
 </head>
 <body>
   <header>
-    <h1 onclick="showHomePage()">BG Cut</h1>
-    <button id="menu-btn">☰</button>
-    <nav id="menu">
-      <a href="index.html">Home</a>
-      <a href="contact.html">Contact Us</a>
-    </nav>
+    <h1>BG Cut</h1>
   </header>
 
   <main id="main-content">
@@ -199,83 +158,67 @@
     const colorBoxes = document.querySelectorAll('.color-box');
     const colorPalette = document.getElementById('color-palette');
     const generateText = document.getElementById('generate-text');
-    const menuBtn = document.getElementById('menu-btn');
-    const menu = document.getElementById('menu');
     const customImageInput = document.getElementById('custom-image-input');
 
-    menuBtn.addEventListener('click', () => {
-      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
-
     fileInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+        const file = e.target.files[0];
+        if (!file) return;
 
-      resultImage.style.display = 'none';
-      downloadBtn.style.display = 'none';
-      chooseImageBtn.style.display = 'none';
-      previewSection.style.background = 'white';
-      colorPalette.style.display = 'none';
-      generateText.style.display = 'block';
+        resultImage.style.display = 'none';
+        downloadBtn.style.display = 'none';
+        chooseImageBtn.style.display = 'none';
+        colorPalette.style.display = 'none';
+        generateText.style.display = 'block';
 
-      try {
-        const formData = new FormData();
-        formData.append('image_file', file);
-        formData.append('size', 'auto');
+        try {
+            const formData = new FormData();
+            formData.append('image_file', file);
+            formData.append('size', 'auto');
 
-        const response = await fetch('https://api.remove.bg/v1.0/removebg', {
-          method: 'POST',
-          headers: {
-            'X-Api-Key': '8n4nXWokcwpa142ZmbFeMZLz'
-          },
-          body: formData
-        });
+            const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                method: 'POST',
+                headers: { 'X-Api-Key': '8n4nXWokcwpa142ZmbFeMZLz' },
+                body: formData
+            });
 
-        if (!response.ok) {
-          throw new Error('Failed to process image');
+            if (!response.ok) throw new Error('Failed to process image');
+
+            const resultBlob = await response.blob();
+            const resultUrl = URL.createObjectURL(resultBlob);
+
+            generateText.style.display = 'none';
+            resultImage.src = resultUrl;
+            resultImage.style.display = 'block';
+            downloadBtn.style.display = 'inline-block';
+            chooseImageBtn.style.display = 'inline-block';
+            colorPalette.style.display = 'flex';
+
+            previewSection.style.background = `url('https://i.postimg.cc/Wz8gVcVD/Picsart-25-02-11-00-47-11-635.jpg') center/cover no-repeat`;
+
+        } catch (error) {
+            alert(error.message);
         }
-
-        const resultBlob = await response.blob();
-        const resultUrl = URL.createObjectURL(resultBlob);
-
-        resultImage.src = resultUrl;
-        resultImage.style.display = 'block';
-        downloadBtn.style.display = 'inline-block';
-        chooseImageBtn.style.display = 'inline-block';
-        colorPalette.style.display = 'flex';
-        generateText.style.display = 'none';
-
-        downloadBtn.onclick = () => {
-          const link = document.createElement('a');
-          link.href = resultUrl;
-          link.download = 'processed-image.png';
-          link.click();
-        };
-      } catch (error) {
-        alert(error.message);
-      }
     });
 
     chooseImageBtn.addEventListener('click', () => {
-      customImageInput.click();
+        customImageInput.click();
     });
 
     customImageInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          previewSection.style.backgroundImage = `url(${reader.result})`;
-        };
-        reader.readAsDataURL(file);
-      }
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                previewSection.style.background = `url(${reader.result}) center/cover no-repeat`;
+            };
+            reader.readAsDataURL(file);
+        }
     });
 
     colorBoxes.forEach(box => {
-      box.addEventListener('click', () => {
-        const selectedColor = box.dataset.color;
-        previewSection.style.background = selectedColor;
-      });
+        box.addEventListener('click', () => {
+            previewSection.style.background = box.dataset.color;
+        });
     });
   </script>
 </body>
